@@ -2,15 +2,13 @@ const knex = require('knex');
 const path = require('path');
 
 const connection = knex({
-    client: 'sqlite3',
+    client: 'mysql2',
     connection: {
-        filename: path.resolve(__dirname, 'db.sqlite'),
-    },
-    migrations: {
-        directory: path.resolve(__dirname, 'database', 'migrations')
-    },
-    seeds: {
-        directory: path.resolve(__dirname, 'database', 'seeds')
+      host : 'mysql669.umbler.com',
+      user : 'medical',
+      password : '1nf0rm4t1c4',
+      port: Number(41890),
+      database : 'medical'
     },
     useNullAsDefault: true
 });

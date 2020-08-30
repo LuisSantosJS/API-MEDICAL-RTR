@@ -33,9 +33,13 @@ module.exports = {
             description,
             title,
             date,
+            dateAtual
         } = request.body;
         if (userID == null) {
             return response.json({ message: 'falta o ID do user' })
+        }
+        if (dateAtual == null) {
+            return response.json({ message: 'falta o  dateAtual' })
         }
         if (numberStatus == null) {
             return response.json({ message: 'falta o numberStatus' })
@@ -64,11 +68,12 @@ module.exports = {
             status,
             statusText: 'Pendiente',
             timestamp,
-            views: [],
+            views: '',
             timestampTarea,
             description,
             title,
             date,
+            dateAtual
         }]).then(() => {
             knex('posts').select('*').then(res => {
                 request.app.io.emit('posts', res);
@@ -141,7 +146,7 @@ module.exports = {
         }
         const newViews = String(String(splitArray) + ',' + String(userEmail))
         knex('posts').where('id', postID).update({
-            views: Array(newViews)
+            views: String(newViews)
         }).then(() => {
             knex('posts').select('*').then(res => {
                 request.app.io.emit('posts', res);

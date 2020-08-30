@@ -55,6 +55,9 @@ module.exports = {
             return response.json({ message: 'falta o password' })
         }
         const passwordHash = await knex('users').where('email', email).select('users.password');
+        if (passwordHash.length === 0) {
+            return response.json({ message: 'error', err:'usuário não existe' })
+        }
         bcrypt.compare(String(password), String(passwordHash[0].password)).then(res => {
             // console.log(res, passwordHash[0].password)
             if (res === false) {

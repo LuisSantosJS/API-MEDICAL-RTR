@@ -1,9 +1,13 @@
 const path = require('path');
 
 module.exports = {
-    client: 'sqlite3',
+    client: 'mysql2',
     connection: {
-        filename: path.resolve(__dirname, 'src', 'database', 'db.sqlite')
+      host : 'mysql669.umbler.com',
+      user : 'medical',
+      password : '1nf0rm4t1c4',
+      port: Number(41890),
+      database : 'medical'
     },
     migrations: {
         directory: path.resolve(__dirname, 'src', 'database', 'migrations')
