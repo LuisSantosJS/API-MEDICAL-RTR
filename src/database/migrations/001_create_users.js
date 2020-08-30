@@ -6,6 +6,7 @@ exports.up = async (knex) => {
         table.string('name', 255).notNullable();
         table.string('email', 255).notNullable();
         table.string('token').notNullable();
+        table.string('password', 255).notNullable();
     });
 }
 

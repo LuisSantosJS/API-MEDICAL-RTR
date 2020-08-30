@@ -3,7 +3,7 @@ const knex = require('../database/connection');
 const bcrypt = require('bcryptjs');
 module.exports = {
     async index(request, response) {
-        const users = await knex('users').select('*').orderBy('id', 'desc');
+        const users = await knex('users').select('users.name', 'users.email', 'users.id', 'users.disabled', 'users.token').orderBy('id', 'desc');
         return response.json(users);
     },
     async create(request, response) {
@@ -23,13 +23,23 @@ module.exports = {
                 message: 'sem password'
             })
         }
+        const verifiUser = await knex('users').where('email', email).select('*');
+        if (verifiUser.length !== 0) {
+            return response.json({ message: 'usuário existente' })
+        }
         bcrypt.hash(password, 10, function (err, hash) {
             knex('users').insert([{
                 name,
                 email,
-                password: hash
+                token: '',
+                password: hash,
+                disabled: false
             }]).then(() => {
-                return response.json({ message: 'success' })
+                knex('users').select('*').then(res => {
+                    request.app.io.emit('users', res);
+                }).finally(() => {
+                    return response.json({ message: 'success' })
+                })
             }).catch(() => {
                 return response.json({ message: 'error' })
             })
@@ -45,11 +55,13 @@ module.exports = {
             return response.json({ message: 'falta o password' })
         }
         const passwordHash = await knex('users').where('email', email).select('users.password');
-        bcrypt.compare(password, passwordHash, function (err, res) {
+        bcrypt.compare(String(password), String(passwordHash[0].password)).then(res => {
+            // console.log(res, passwordHash[0].password)
             if (res === false) {
                 return response.json({ message: 'password false' })
             }
             knex('users').where('email', email).select('*').then(res => {
+
                 return response.json({ message: 'success', data: res });
             }).catch(err => {
                 return response.json({ message: 'error', data: err });
@@ -68,7 +80,11 @@ module.exports = {
         knex('users').where('id', userID).update({
             disabled: Boolean(status)
         }).then(() => {
-            return response.json({ message: 'success' })
+            knex('users').select('*').then(res => {
+                request.app.io.emit('users', res);
+            }).finally(() => {
+                return response.json({ message: 'success' })
+            })
         }).catch(() => {
             return response.json({ message: 'error' })
         })

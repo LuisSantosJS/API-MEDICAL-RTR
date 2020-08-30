@@ -14,7 +14,7 @@ exports.up = async (knex) => {
         table.float('timestampTarea', 8, 2).notNullable();
         table.string('description', 1024).notNullable();
         table.string('title', 255).notNullable();
-        table.string('date', 1024).notNullable();
+        table.string('date', 255).notNullable();
         // table.timestamps(true, true);
     });
 }

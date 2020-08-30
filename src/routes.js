@@ -5,9 +5,11 @@ const CommentController = require('./controllers/CommentsController');
 const routes = express.Router();
 
 
-routes.get('/posts', PostsController.index)
-routes.post('/posts/create', PostsController.createPost)
-routes.post('/posts/delete', PostsController.deletePost)
+routes.get('/posts', PostsController.index);
+routes.post('/posts/create', PostsController.createPost);
+routes.post('/posts/delete', PostsController.deletePost);
+routes.post('/posts/status/update', PostsController.updateStatus);
+routes.post('/posts/users/view', PostsController.viewsUser);
 
 routes.get('/users', UsersController.index);
 routes.post('/users/create', UsersController.create);
@@ -17,6 +19,7 @@ routes.post('/users/login', UsersController.login);
 routes.get('/comments', CommentController.index);
 routes.post('/comments/create', CommentController.createComment);
 routes.post('/comments/delete', CommentController.deleteComment);
+
 
 
 module.exports = routes;
