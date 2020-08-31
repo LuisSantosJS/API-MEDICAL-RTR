@@ -56,7 +56,7 @@ module.exports = {
         }
         const passwordHash = await knex('users').where('email', email).select('users.password');
         if (passwordHash.length === 0) {
-            return response.json({ message: 'error', err:'usuário não existe' })
+            return response.json({ message: 'error', err: 'usuário não existe' })
         }
         bcrypt.compare(String(password), String(passwordHash[0].password)).then(res => {
             // console.log(res, passwordHash[0].password)
@@ -65,7 +65,7 @@ module.exports = {
             }
             knex('users').where('email', email).select('*').then(res => {
 
-                return response.json({ message: 'success', data: res });
+                return response.json({ message: 'success', data: res[0] });
             }).catch(err => {
                 return response.json({ message: 'error', data: err });
             })
@@ -83,13 +83,27 @@ module.exports = {
         knex('users').where('id', userID).update({
             disabled: Boolean(status)
         }).then(() => {
-            knex('users').select('*').then(res => {
-                request.app.io.emit('users', res);
+            knex('users').where('id', userID).select('*').then(res => {
+                request.app.io.emit(`users-${userID}`, res[0]);
+                knex('users').select('*').orderBy('id', "desc").then(resp=>{
+                    request.app.io.emit(`userss`, resp);
+                })
             }).finally(() => {
                 return response.json({ message: 'success' })
             })
         }).catch(() => {
             return response.json({ message: 'error' })
+        })
+    },
+    async uniqueUser(request, response) {
+        const { userID } = request.query;
+        if (userID == null) {
+            return response.json({ message: 'falta o userID' })
+        }
+        knex('users').where('id', userID).select('users.name', 'users.email', 'users.id', 'users.disabled', 'users.token').then(res => {
+            return response.json({ message: 'success', data: res[0] })
+        }).catch((err) => {
+            return response.json({ message: 'error', data: err })
         })
     }
 }

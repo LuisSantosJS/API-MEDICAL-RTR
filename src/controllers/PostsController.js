@@ -1,15 +1,14 @@
 const knex = require('../database/connection');
 module.exports = {
     async index(request, response) {
-        const { page } = request.query;
-        if (page == null) {
-            return response.json({ message: 'falta a paginação' })
-        }
+        // const { page } = request.query;
+        // if (page == null) {
+        //     return response.json({ message: 'falta a paginação' })
+        // }
         const posts = await knex('posts')
-            .limit(5)
-            .offset((page - 1) * 5)
+            .select('posts.*')
             .join('users', 'posts.userID', 'users.id')
-            .select('posts.*').select('users.name', 'users.email')
+            .select('users.name', 'users.email')
             // .join('comments', 'posts.id', 'comments.postID')
             // .select(
             //     'comments.color',
@@ -19,6 +18,19 @@ module.exports = {
             //     'comments.solit',
             //     'comments.status',
             //     'comments.statusText')
+            .orderBy('id', 'desc');
+        return response.json(posts);
+    },
+
+    async unique(request, response) {
+        const { postID } = request.query;
+        if (postID == null) {
+            return response.json({ message: 'falta o id do post' })
+        }
+        const posts = await knex('posts').where('id', postID)
+            .select('posts.*')
+            .join('users', 'posts.userID', 'users.id')
+            .select('users.name', 'users.email')
             .orderBy('id', 'desc');
         return response.json(posts);
     },
@@ -36,6 +48,7 @@ module.exports = {
             dateAtual
         } = request.body;
         if (userID == null) {
+            console.log(userID)
             return response.json({ message: 'falta o ID do user' })
         }
         if (dateAtual == null) {
@@ -75,11 +88,15 @@ module.exports = {
             date,
             dateAtual
         }]).then(() => {
-            knex('posts').select('*').then(res => {
-                request.app.io.emit('posts', res);
-            }).finally(() => {
-                return response.json({ message: 'success' })
-            })
+            knex('posts')
+                .select('posts.*')
+                .join('users', 'posts.userID', 'users.id')
+                .select('users.name', 'users.email')
+                .orderBy('id', 'desc').then(res => {
+                    request.app.io.emit('posts', res);
+                }).finally(() => {
+                    return response.json({ message: 'success' })
+                })
         }).catch((e) => {
             return response.json({ message: 'error', e })
         })
@@ -90,11 +107,15 @@ module.exports = {
             return response.json({ message: 'falta o id do Post' })
         }
         knex('posts').where('id', postID).delete().then(() => {
-            knex('posts').select('*').then(res => {
-                request.app.io.emit('posts', res);
-            }).finally(() => {
-                return response.json({ message: 'success' })
-            })
+            knex('posts')
+                .select('posts.*')
+                .join('users', 'posts.userID', 'users.id')
+                .select('users.name', 'users.email')
+                .orderBy('id', 'desc').then(res => {
+                    request.app.io.emit('posts', res);
+                }).finally(() => {
+                    return response.json({ message: 'success' })
+                })
         }).catch(() => {
             return response.json({ message: 'error' })
         })
@@ -119,11 +140,15 @@ module.exports = {
             numberStatus,
             statusText
         }).then(() => {
-            knex('posts').select('*').then(res => {
-                request.app.io.emit('posts', res);
-            }).finally(() => {
-                return response.json({ message: 'success' })
-            })
+            knex('posts')
+                .select('posts.*')
+                .join('users', 'posts.userID', 'users.id')
+                .select('users.name', 'users.email')
+                .orderBy('id', 'desc').then(res => {
+                    request.app.io.emit('posts', res);
+                }).finally(() => {
+                    return response.json({ message: 'success' })
+                })
         }).catch(() => {
             return response.json({ message: 'error' })
         })
@@ -148,11 +173,15 @@ module.exports = {
         knex('posts').where('id', postID).update({
             views: String(newViews)
         }).then(() => {
-            knex('posts').select('*').then(res => {
-                request.app.io.emit('posts', res);
-            }).finally(() => {
-                return response.json({ message: 'success' })
-            })
+            knex('posts')
+                .select('posts.*')
+                .join('users', 'posts.userID', 'users.id')
+                .select('users.name', 'users.email')
+                .orderBy('id', 'desc').then(res => {
+                    request.app.io.emit('posts', res);
+                }).finally(() => {
+                    return response.json({ message: 'success' })
+                })
         }).catch((err) => {
             return response.json({ message: 'error', data: err })
         })
