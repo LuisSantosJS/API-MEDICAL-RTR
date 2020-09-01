@@ -5,7 +5,7 @@ exports.up = async (knex) => {
         table.integer('userID', 255).unsigned().references('id').inTable('users');
         table.string('numberStatus').notNullable();
         table.string('status', 200).notNullable();
-        table.string('views');
+        table.string('views',8180);
         table.string('statusText', 200).notNullable();
         table.string('timestamp').notNullable();
         table.string('timestampTarea').notNullable();
