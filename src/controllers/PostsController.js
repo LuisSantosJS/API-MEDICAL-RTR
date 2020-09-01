@@ -22,18 +22,20 @@ module.exports = {
         return response.json(posts);
     },
 
-    async unique(request, response) {
-        const { postID } = request.query;
-        if (postID == null) {
-            return response.json({ message: 'falta o id do post' })
-        }
-        const posts = await knex('posts').where('id', postID)
-            .select('posts.*')
-            .join('users', 'posts.userID', 'users.id')
-            .select('users.name', 'users.email')
-            .orderBy('id', 'desc');
-        return response.json(posts);
-    },
+    // async unique(request, response) {
+    //     const { postID } = request.query;
+    //     if (postID == null) {
+    //         return response.json({ message: 'falta o id do post' })
+    //     }
+    //     knex('posts').where('id','=',postID)
+    //         .select('posts.*')
+    //         .join('users', 'posts.userID', 'users.id')
+    //         .select('users.name', 'users.email')
+    //         .orderBy('id', 'desc').then(posts => {
+    //             return response.json(posts);
+    //         }).catch(err => console.log(err))
+
+    // },
 
     async createPost(request, response) {
         const {

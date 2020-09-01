@@ -10,7 +10,7 @@ routes.post('/posts/create', PostsController.createPost);
 routes.post('/posts/delete', PostsController.deletePost);
 routes.post('/posts/status/update', PostsController.updateStatus);
 routes.post('/posts/users/view', PostsController.viewsUser);
-routes.post('/posts/unique', PostsController.unique);
+// routes.get('/posts/unique', PostsController.unique);
 
 routes.get('/users', UsersController.index);
 routes.post('/users/create', UsersController.create);
@@ -21,7 +21,7 @@ routes.get('/users/unique', UsersController.uniqueUser);
 routes.get('/comments', CommentController.index);
 routes.post('/comments/create', CommentController.createComment);
 routes.post('/comments/delete', CommentController.deleteComment);
-
+routes.post('/comments/update', CommentController.updateStatus);
 
 
 module.exports = routes;
