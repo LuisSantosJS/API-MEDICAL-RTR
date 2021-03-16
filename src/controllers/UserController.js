@@ -40,7 +40,8 @@ module.exports = {
                 }).finally(() => {
                     return response.json({ message: 'success' })
                 })
-            }).catch(() => {
+            }).catch((err) => {
+                console.log(err)
                 return response.json({ message: 'error' })
             })
         });
@@ -92,7 +93,8 @@ module.exports = {
             }).finally(() => {
                 return response.json({ message: 'success' })
             })
-        }).catch(() => {
+        }).catch((err) => {
+            console.log(err)
             return response.json({ message: 'error' })
         })
     },
@@ -104,6 +106,7 @@ module.exports = {
         knex('users').where('id', userID).select('users.name', 'users.email', 'users.id', 'users.disabled', 'users.token').then(res => {
             return response.json({ message: 'success', data: res[0] })
         }).catch((err) => {
+            console.log(err)
             return response.json({ message: 'error', data: err })
         })
     }
