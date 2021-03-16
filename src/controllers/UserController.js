@@ -67,6 +67,7 @@ module.exports = {
 
                 return response.json({ message: 'success', data: res[0] });
             }).catch(err => {
+                console.log(err)
                 return response.json({ message: 'error', data: err });
             })
         });
